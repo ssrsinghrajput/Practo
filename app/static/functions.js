@@ -3,13 +3,15 @@ $("#search-btn").click(function () {
 	var locInput = $("#loc").val();
 	var city = "";
 	var index = 1;
-	var docList = getDoctorData(specInput,locInput,city,index);
-	
-	$("#search-box").animate({marginTop: "0px"}, 400, "linear", function () {
-		$("#doctor-list-wrapper").text("");
-		makeDoctorCards(docList);
-	});
-	$("#pagination-wrapper").show();
+	function f(doc) {
+		console.log("Hello",doc);
+		$("#search-box").animate({marginTop: "0px"}, 400, "linear", function () {
+			$("#doctor-list-wrapper").text("");
+			makeDoctorCards(doc);
+		});
+		$("#pagination-wrapper").show();
+	}
+	getDoctorData(specInput,locInput,city,index, f);
 });
 
 $("#page-list li").on("click", function (){
@@ -52,17 +54,31 @@ $("#spec").on("input",function() {
 	});	
 });
 
-// $("#loc").on("input", function() {
-// 	$("#loc").autocomplete({
-// 		source: getLocationList("")
-// 	});
-// });
+ $("#loc").on("input", function() {
+ 	$("#loc").autocomplete({
+ 		source: getLocationList("bangalore")
+ 	});
+ });
 
-function getDoctorData(speciality, location, city, index) {
+function getLocationList(city){
+	var cityList = [];
+	$.get("get/bangalore", function(data){
+		var List = data.results;
+		for (var i = 0;i < List.length;i++){
+			cityList.push(List[i].area);
+		}
+		console.log(cityList);
+	});
+	return cityList;
+}
+function getDoctorData(speciality, location, city, index, func_proc) {
 
 	var docList = [];
+	var Data;
 	$.get("bangalore/jp nagar/surgeon/1", function(data){
-		docList = data;
+		var docList = data.results;
+		console.log(docList);
+		func_proc(docList);
 	});
 	// //var docList = [
 	// 	{
@@ -74,113 +90,7 @@ function getDoctorData(speciality, location, city, index) {
 	// 		"imgsrc": "/img/1.png",
 	// 		"area": "JP Nagar",
  //        	"completeaddress": "This is the complete address of the clinic"
-	// 	},
-	// 	{
-	// 		"name": "Dr Thor Odinson",
-	// 		"experience": "24 Years",
-	// 		"specialization": "Dermatologist",
-	// 		"rate": "INR 400",
-	// 		"education": "M.B.B.S, MD-Dermatology",	
-	// 		"imgsrc": "/img/2.png",
-	// 		"area": "HSR Layout",
- //        	"completeaddress": "This is the complete address of the clinic"
-	// 	},
-	// 	{
-	// 		"name": "Dr Barry Allen",
-	// 		"experience": "2 Years",
-	// 		"specialization": "Pediatrician",
-	// 		"rate": "INR 600",
-	// 		"education": "M.B.B.S, M.D - Pediatrics",	
-	// 		"imgsrc": "/img/2.png",
-	// 		"area": "JP Nagar",
- //        	"completeaddress": "This is the complete address of the clinic"
-	// 	},
-	// 	{
-	// 		"name": "Dr Clark Kent",
-	// 		"experience": "6 Years",
-	// 		"specialization": "Dermatologist",
-	// 		"rate": "INR 350",
-	// 		"education": "MD-Dermatology",	
-	// 		"imgsrc": "/img/2.png",
-	// 		"area": "BTM Layout",
- //        	"completeaddress": "This is the complete address of the clinic"
 	// 	}
-	// 	,
-	// 	{
-	// 		"name": "Dr Bruce Wayne",
-	// 		"experience": "15 Years",
-	// 		"specialization": "Homeopath",
-	// 		"rate": "INR 300",
-	// 		"education": "B.H.S",	
-	// 		"imgsrc": "/img/2.png",
-	// 		"area": "Bannerghatta Road",
- //        	"completeaddress": "This is the complete address of the clinic"
-	// 	}
-	// 	,
-	// 	{
-	// 		"name": "Dr Oliver Queen",
-	// 		"experience": "5 Years",
-	// 		"specialization": "Pediatrician",
-	// 		"rate": "INR 700",
-	// 		"education": "M.B.B.S, DCH",	
-	// 		"imgsrc": "/img/2.png",
-	// 		"area": "WhiteField",
- //        	"completeaddress": "This is the complete address of the clinic"
-	// 	}
-	// 	,
-	// 	{
-	// 		"name": "Dr Steve Rogers",
-	// 		"experience": "25 Years",
-	// 		"specialization": "Cardiologist",
-	// 		"rate": "INR 600",
-	// 		"education": "M.D",	
-	// 		"imgsrc": "/img/2.png",
-	// 		"area": "WhiteField",
- //        	"completeaddress": "This is the complete address of the clinic"
-	// 	}
-	// 	,
-	// 	{
-	// 		"name": "Dr Sarah Conner",
-	// 		"experience": "5 Years",
-	// 		"specialization": "Dentist",
-	// 		"rate": "INR 500",
-	// 		"education": "B.D.S, M.D.S",
-	// 		"imgsrc": "/img/2.png",
-	// 		"area": "BTM Layout",
- //        	"completeaddress": "This is the complete address of the clinic"
-	// 	}
-	// 	,
-	// 	{
-	// 		"name": "Dr Charles Xavier",
-	// 		"experience": "19 Years",
-	// 		"specialization": "Dentist",
-	// 		"rate": "INR 400",
-	// 		"education": "B.D.S, M.D.S",
-	// 		"imgsrc": "/img/2.png",
-	// 		"area": "JP Nagar",
- //        	"completeaddress": "This is the complete address of the clinic"
-	// 	}
-	// 	,
-	// 	{
-	// 		"name": "Dr Peter Parker",
-	// 		"experience": "5 Years",
-	// 		"specialization": "Pediatrician",
-	// 		"rate": "INR 350",
-	// 		"education": "M.B.B.S, DCH",	
-	// 		"imgsrc": "/img/2.png",
-	// 		"area": "WhiteField",
- //        	"completeaddress": "This is the complete address of the clinic"
-	// 	}
-
-
-	// var len = docList.length;
-	// var output = [];
-	// for(var x = 0; x<len; x++) {
-	// 	if(speciality == docList[x]["specialization"] && location == docList[x]["area"]) {
-	// 		output.push(docList[x]);
-	// 	}
-	// }
-	return docList;	
 }
 
 function getSpecialityList() {

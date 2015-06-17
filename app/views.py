@@ -17,7 +17,12 @@ def home_page():
 @app.route("/<city>")
 def search_page(city,index=1):
 
-    def areas_by_city(city):
+    practoCSS = url_for('static', filename='practo.css')
+    functionsJS = url_for('static', filename='functions.js')
+    return search_template.render(practoCSS=practoCSS, functionsJS=functionsJS, city=city, index=index)
+
+@app.route("/get/<city>")
+def areas_by_city(city):
         list = models.AreaMapping.query.filter_by(city=city)
         areas = []
         for li in list:
@@ -27,19 +32,6 @@ def search_page(city,index=1):
                     m[key] = li.__dict__[key]
             areas.append(m)
         return jsonify(results=areas)
-
-    practoCSS = url_for('static', filename='practo.css')
-    functionsJS = url_for('static', filename='functions.js')
-    cityList = areas_by_city(city)
-    return search_template.render(practoCSS=practoCSS, functionsJS=functionsJS, city=city, index=index, cityList=cityList)
-
-@app.route("/<city>/<index>")
-def search_page_index(city,index):
-    practoCSS = url_for('static', filename='practo.css')
-    functionsJS = url_for('static', filename='functions.js')
-    return search_template.render(practoCSS=practoCSS, functionsJS=functionsJS, city=city, index=index) 
-
-
 
 @app.route('/<city>/<area>/<specialization>/<page>',methods=['GET', 'POST'])
 def doctors_by_area(city, area, specialization, page):
